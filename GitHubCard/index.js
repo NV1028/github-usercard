@@ -24,7 +24,7 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -53,3 +53,79 @@ const followersArray = [];
   luishrd
   bigknell
 */
+
+
+axios.get('https://api.github.com/users/NV1028')
+  .then(function (response) {
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
+  const followersArray = ['kpoe03','tetondan',
+'dustinmyers',
+'justsml',
+'luishrd',
+'bigknell'];
+
+function githubCardCreator(object1){
+  let divCard = document.createElement('div');
+  let imgEl = document.createElement('img');
+  let divInfo = document.createElement('div');
+  let h3Name = document.createElement('h3');
+  let pUser = document.createElement('p');
+  let pLoc = document.createElement('p');
+  let pPro = document.createElement('p');
+  let proAddressA = document.createElement('a');
+  let pFollow = document.createElement('p');
+  let pFollowing = document.createElement('p');
+  let pBio = document.createElement('p');
+
+  divCard.classList.add('card');
+  
+  divInfo.classList.add('card-info');
+  h3Name.classList.add('name');
+  pUser.classList.add('username');
+  proAddressA.href = object1.data.html_url;
+
+  divCard.appendChild(imgEl);
+  divCard.appendChild(divInfo);
+  divInfo.appendChild(h3Name);
+  divInfo.appendChild(pUser);
+  divInfo.appendChild(pLoc);
+  divInfo.appendChild(pPro);
+ 
+  divInfo.appendChild(pFollow);
+  divInfo.appendChild(pFollowing);
+  divInfo.appendChild(pBio);
+
+  //proAddressA.setAttribute('href', object1.data.html_url);
+  
+// href = "profile: yadayada"
+
+  imgEl.src = object1.data.avatar_url;
+  h3Name.textContent = object1.data.name;
+  pUser.textContent = object1.data.login;
+  pPro.textContent = "Profile: ";
+  pPro.appendChild(proAddressA);
+  proAddressA.textContent = object1.data.html_url;
+  pLoc.textContent = `Location: ${object1.data.location}`;
+  pFollow.textContent = `Followers: ${object1.data.followers}`;
+  pFollowing.textContent = `Following: ${object1.data.following}`;
+  pBio.textContent = `Bio: ${object1.data.bio}`;
+ 
+
+  return divCard
+}
+let masterDiv = document.querySelector('.cards');
+
+console.log(masterDiv);
+
+followersArray.forEach(person => {
+  axios.get(`https://api.github.com/users/${person}`)
+  .then((response)=> masterDiv.appendChild(githubCardCreator(response)))
+})
+.catch(error => {
+  console.log('Data brokeded', error);
+})
